@@ -1,0 +1,54 @@
+{
+  "name": "asyn-harvest",
+  "description": "An middle way between callbacks hell and promises. Get simpler and cleaner code, optimised for harvesting asynchronous functions that follow a very simple convention",
+  "version": "0.1.0",
+  "homepage": "https://github.com/salboaie/SwarmHarvest",
+  "author": {
+    "name": "Alboaie Sinica",
+    "email": "salboaie@gmail.com"
+  },
+  "contributors": [
+    {
+      "name": "Alboaie Sinica",
+      "email": "salboaie@gmail.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/salboaie/SwarmHarvest.git"
+  },
+  "bugs": {
+    "email": "salboaie@gmail.com",
+    "url": "https://github.com/salboaie/SwarmHarvest/issues"
+  },
+  "directories": {
+    "lib": "./lib"
+  },
+  "engines": {
+
+    "node": ">=0.6.0"
+  },
+  "devDependencies": {
+    "tap": "0.2"
+  },
+  "scripts": {
+    "test": "tap test/*.js"
+  },
+  "main": "./lib/harvest.js",
+  "licenses": [
+    {
+      "type": "LGPL",
+      "url": "http://www.gnu.org/licenses/lgpl.html"
+    }
+  ],
+  "_id": "asyn-harvest@0.1.0",
+  "dependencies": {},
+  "optionalDependencies": {},
+  "_engineSupported": true,
+  "_npmVersion": "1.1.12",
+  "_nodeVersion": "v0.6.14",
+  "_defaultsLoaded": true,
+  "dist": {
+    
+  }
+}
