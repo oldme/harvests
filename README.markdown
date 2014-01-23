@@ -8,12 +8,14 @@ SwarmHarvest is an attempt to solve the ugliness of the asynchronous callbacks w
  The only thing that changes is the syntax of calling those functions. You call those functions in a Harvest context that magically detects dependencies, make calls,etc.
 
   Simple Example:
-    // we assume 2 functions (asynchronous APIs). The only conventions is that success(returnedResult) will be called by these APIs when they succeed
-        loadPenguin(id,success, error)
-        loadPenguinFamily(father,mother, success, error)
+
+        // we assume 2 functions (asynchronous APIs). The only conventions is that success(returnedResult) will be called by these APIs when they succeed
+            loadPenguin(id,success, error)
+            loadPenguinFamily(father,mother, success, error)
+
 
     // now, let's see how we load some Penguins
-        var harvest = require("harvest").newHarvest();
+        var harvest = require("asyn-harvest").newHarvest();
 
          harvest.load('@father',loadPenguin, 'MrPenguin');
          harvest.load('@mother',loadPenguin, 'MrsPenguin');
@@ -31,7 +33,7 @@ SwarmHarvest is an attempt to solve the ugliness of the asynchronous callbacks w
     Very simple API:
 
     //create an harvest context
-      var harvest = require("harvest").newHarvest(contextBinding);
+      var harvest = require("asyn-harvest").newHarvest(contextBinding);
       contextBinding is an optional argument, and it is a function that can create an wrapper for all callbacks and handlers. Useful in the context of a multi tenancy and multi user systems
         (as example, look at createSwarmCallBack in swarmESB adapters)
 
