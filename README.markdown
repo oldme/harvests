@@ -15,7 +15,7 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
         loadPenguin(nickName, successCallBack, errorCallBack)
         loadPenguinFamily(father, mother, successCallBack, errorCallBack)
      
-     //the convention is that successCallBack(returnedResult) will be called by these APIs on succees and errorCallBack on fails
+>   // the result of the functionApi is not useful, it is called the convention is that successCallBack(returnedResult) will be called by these APIs on succees and errorCallBack on fails
 
 
     // now, let's see how we load some Penguins
@@ -26,13 +26,14 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
          harvest.load('family', loadPenguinFamily, wait('father'), wait('mother'));
 
          harvest.onSuccess(function(harvest){
-            console.log("All those 3 requests are completed and in harvest.family we got those cute penguin children");
+>            console.log("All those 3 requests are completed and in harvest.family we got those cute penguin children");
             }
          });
 
          harvest.onError(function(harvest){
                       console.log("Well, move those penguins to the South Pole...");
          });
+
     //for a complete exemplification, look in test/penguin.js
 
 
@@ -43,12 +44,10 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
 
       var harvest = require("asyn-harvest").create();
 
-      create() can take 2 optional arguments: contextBindingCallBack and allowMonkeyTail
-      contextBindingCallBack is a function that can create an wrapper for callbacks used during harvesting
-      contextBindingCallBack  is useful in the context of a multi tenancy and multi user, shared systems
-      As an example, look at createSwarmCallBack in swarmESB adapters
-      allowMonkeyTail is to enable use of @ as a mark of free variables (if you prefer to not use wait).
-      For security reasons, use of @ is disabled by default
+>create() can take 2 optional arguments: contextBindingCallBack and allowMonkeyTail.    contextBindingCallBack is a function that can create an wrapper for callbacks used during harvesting
+> contextBindingCallBack  is useful in the context of a multi tenancy and multi user, shared systems. For an example, look at createSwarmCallBack in swarmESB adapters
+
+> allowMonkeyTail is to enable use of @ as a mark of free variables (if you prefer to not use wait). For security reasons, use of @ is disabled by default
 
 
 ###wait(variableName)
@@ -66,23 +65,21 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
 
 ### do()
 
-    // execute an function, the result of the functionApi is not useful, it is called as soon as all their free variables are ready
-    //don't change the success or fail status for a harvest
+> 'do' execute the function as soon as all their free variables are ready. The result is not useful. do don't change the success or fail status for a harvest
     harvest.do(functionApi, ... )
 
 ### Can use third party APIs, prefer other calling conventions?
 
-     //You can create or reuse your own conventions for getting results from the asynchronous functions
+>You can create or reuse your own conventions for getting results from the asynchronous functions
 
      harvest.loadWithConvention(variableName, conventionFunction, callback)
      harvest.loadAtWithConvention(variableName, conventionFunction, callback)
 
-     //conventionFunction is a function that knows how to call the callback
-     // look in the harvest.js for how defaultHarvestCallConvention is implemented, other conventions can be easily created
+> conventionFunction is a function that knows how to call the callback. Please,look in the harvest.js for how defaultHarvestCallConvention is implemented, other conventions can be easily created
 
 ### onSuccess()
 
->instruct what to do in case of success.   handler is a callback that should be called when all the calls were made, returning the harvest as parameter
+> Instruct the harvest what to do in case of success.   handler is a callback that should be called when all the calls were made, returning the harvest as parameter
 
      harvest.onSuccess(handler)
 
