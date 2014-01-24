@@ -15,7 +15,7 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
         loadPenguin(nickName, successCallBack, errorCallBack)
         loadPenguinFamily(father, mother, successCallBack, errorCallBack)
      
-     //the convention is that successCallBack(returnedResult) will be called by these APIs when they succeed and error
+     //the convention is that successCallBack(returnedResult) will be called by these APIs on succees and errorCallBack on fails
 
 
     // now, let's see how we load some Penguins
@@ -82,39 +82,41 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
 
 ### onSuccess()
 
-    //instruct what to do in case of success 
-    //handler is a callback that should be called when all the calls were made, returning the harvest as parameter
+>instruct what to do in case of success.   handler is a callback that should be called when all the calls were made, returning the harvest as parameter
 
      harvest.onSuccess(handler)
 
-### onFailure()
+### onFail()
 
-    //instruct the context what to do in case of a fail
-    // an uncaught exception in any call or call of error functions can cause the failure of the harvest
+>instruct the context what to do in case of a fail. Aa uncaught exception in any call or call of error functions can cause the failure of the harvest
 
-    harvest.onFail(handler)  //handler is callback that will be called with an error object (the error cause)
+    harvest.onFail(handler)  //handler is a callback that will be called with an error object (the error cause)
 
 
 ### finished() 
 
-    //you can get the status of the harvest anytime ( in a timeout for example, etc)
+>you can get the status of the harvest anytime ( in a timeout for example, etc)
 
     harvest.finished()
 
-     // it will return -1 it finished by error, 0 if not finished (still working or waiting callbacks), 1 for success
+>it will return -1 it finished by error, 0 if not finished (still working or waiting callbacks), 1 for success
 
 ### stop the harvest by force...
 
-    //clean memory, call onFailure handler, prevent other calls to be made outside etc
-    //After calling the success or fail handlers, the harvest is automatically stopped if the handlers were not overwritten
+>Clean memory, call onFailure handler, prevent other calls to be made outside etc
+>After calling the success or fail handlers, the harvest is automatically stopped if the handlers were not overwritten
+
      harvest.stop()
 
 
+## ToDOs
+   #### maybe add chains,eg.  wait('variable.field')
 
+   #### detect circular dependencies!?
 
-## ToDO
-   //maybe add chains,eg.  wait('variable.field')
-   //handle the case with multiple result calls that change the same object. I think promises don't handle this case, too, right? How usual is this case !?
-   //create more conventions for standard node.js APIs, other common libraries (anybody want to help here?)
-   //maybe create wrappers to accommodate with standard node.js APIs or other common libraries
+   #### handle the case with multiple result calls that change the same object. I think promises don't handle this case, too, right? How usual is this case !?
+
+   #### create more conventions for standard node.js APIs, other common libraries (anybody want to help here?)
+
+   #### maybe create wrappers to accommodate with standard node.js APIs or other common libraries
 
