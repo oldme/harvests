@@ -1,32 +1,32 @@
-SwarmHarvest is an attempt to solve the ugliness of the asynchronous callbacks without forcing you to use promises.
+SwarmHarvest is an attempt to sort out the ugliness of the asynchronous callbacks without promises or control flow libraries.
+Harvest doesn't attempt to resolve all imaginable cases involving asynchronous code but based on my experience it cover all the real cases found in real projects.
 
- Promises look like a good idea but they were met with some (pasive) resistance. In node.js, promises have multiple implementations, many implementations looks too bloated,complex, etc.
- I personally prefer to not use any promise or flow control library because they all failed my internal beauty tests and I looked for a better alternative.
- 
- We can maintain our simple API, asynchronous functions without promises bloat and I will show you how it can be done.
+ Promises look like a good idea but they were met with an obvious (but passive) resistance. In node.js, promises have multiple implementations but many implementations looks too bloated,complex, etc.
+ I personally prefer to not use any promise or flow control library because they all failed my internal beauty tests and I always hoped for a better alternative.
 
+ An harvest handles in a very simple way the dependencies calls.
  The main idea is to create an environment where you continue to call asynchronous functions as usual.
  The only thing that changes is the syntax of calling those functions. You call those functions in a Harvest context that magically detects dependencies, make calls,etc.
 
 ## Simple Example:
 
-    // we assume 2 functions (asynchronous APIs). 
+    // as example, we assume 2 functions (asynchronous APIs for dealing with penguins)
     
-        loadPenguin(id, success, error)
-        loadPenguinFamily(father, mother, success, error)
+        loadPenguin(nickName, successCallBack, errorCallBack)
+        loadPenguinFamily(father, mother, successCallBack, errorCallBack)
      
-     //The only conventions is that success(returnedResult) will be called by these APIs when they succeed
+     //the convention is that successCallBack(returnedResult) will be called by these APIs when they succeed and error
 
 
     // now, let's see how we load some Penguins
         var harvest = require("asyn-harvest").create();
 
-         harvest.load('@father', loadPenguin, 'MrPenguin');
-         harvest.load('@mother', loadPenguin, 'MrsPenguin');
-         harvest.load('@family', loadPenguinFamily, '@father', '@mother');
+         harvest.load('father', loadPenguin, 'MrPenguin');
+         harvest.load('mother', loadPenguin, 'MrsPenguin');
+         harvest.load('family', loadPenguinFamily, wait('father'), wait('mother'));
 
          harvest.onSuccess(function(harvest){
-            console.log("All those 3 requests are completed and in harvest.family we got thouse cute children");
+            console.log("All those 3 requests are completed and in harvest.family we got those cute penguin children");
             }
          });
 
@@ -39,57 +39,82 @@ SwarmHarvest is an attempt to solve the ugliness of the asynchronous callbacks w
 
 ##    Very simple API:
 
-###create a new harvest context
+### create a new harvest context
 
-      var harvest = require("asyn-harvest").create(contextBinding);
-      contextBinding is an optional argument, and it is a function that can create an wrapper for all callbacks and handlers. Useful in the context of a multi tenancy and multi user systems
-        (as example, look at createSwarmCallBack in swarmESB adapters)
+      var harvest = require("asyn-harvest").create();
+
+      create() can take 2 optional arguments: contextBindingCallBack and allowMonkeyTail
+      contextBindingCallBack is a function that can create an wrapper for callbacks used during harvesting
+      contextBindingCallBack  is useful in the context of a multi tenancy and multi user, shared systems
+      As an example, look at createSwarmCallBack in swarmESB adapters
+      allowMonkeyTail is to enable use of @ as a mark of free variables (if you prefer to not use wait).
+      For security reasons, use of @ is disabled by default
+
+
+###wait(variableName)
+
+    wait(variableName) signals that a free variable needs to be computed before execution
 
 
 ###load() a variable in context; 
 
-    //variableName is a string that begins with an @
     harvest.load(variableName, functionApi, ... )
 
-### loadAt() - load in an array at a position 
+### loadAt() - load in an array in a context at a specified position
 
         harvest.loadAt(arrayName, index,  functionApi, ... )
 
 ### do()
 
     // execute an function, the result of the functionApi is not useful, it is called as soon as all their free variables are ready
-    //do don't change the success or fail status for a harvest
+    //don't change the success or fail status for a harvest
     harvest.do(functionApi, ... )
 
-### you got third party APIS, prefer other calling conventions?
+### Can use third party APIs, prefer other calling conventions?
 
-     //create or reuse your own convention for getting results from the asynchronous function
-     //The only convention is that conventionFunction is a function that knows how to call the callback
-     harvest.loadWithConvention(variableName, conventionFunction, callback )
-     harvest.loadAtWithConvention(variableName, conventionFunction, callback )
+     //You can create or reuse your own conventions for getting results from the asynchronous functions
+
+     harvest.loadWithConvention(variableName, conventionFunction, callback)
+     harvest.loadAtWithConvention(variableName, conventionFunction, callback)
+
+     //conventionFunction is a function that knows how to call the callback
+     // look in the harvest.js for how defaultHarvestCallConvention is implemented, other conventions can be easily created
 
 ### onSuccess()
 
     //instruct what to do in case of success 
-    //handler is callback will be called with the context as parameter
+    //handler is a callback that should be called when all the calls were made, returning the harvest as parameter
+
      harvest.onSuccess(handler)
 
 ### onFailure()
 
     //instruct the context what to do in case of a fail
+    // an uncaught exception in any call or call of error functions can cause the failure of the harvest
+
     harvest.onFail(handler)  //handler is callback that will be called with an error object (the error cause)
 
 
 ### finished() 
 
-    //test the status anytime ( in a timeout for example, etc)
-    harvest.finished() : will return -1 if error, 0 if not finished (still working or waiting), 1 for success
+    //you can get the status of the harvest anytime ( in a timeout for example, etc)
+
+    harvest.finished()
+
+     // it will return -1 it finished by error, 0 if not finished (still working or waiting callbacks), 1 for success
 
 ### stop the harvest by force...
 
     //clean memory, call onFailure handler, prevent other calls to be made outside etc
-    //After calling the success or fail handlers , the harvest is automatically stopped if the handlers were not overwritten
+    //After calling the success or fail handlers, the harvest is automatically stopped if the handlers were not overwritten
      harvest.stop()
 
 
+
+
+## ToDO
+   //maybe add chains,eg.  wait('variable.field')
+   //handle the case with multiple result calls that change the same object. I think promises don't handle this case, too, right? How usual is this case !?
+   //create more conventions for standard node.js APIs, other common libraries (anybody want to help here?)
+   //maybe create wrappers to accommodate with standard node.js APIs or other common libraries
 
