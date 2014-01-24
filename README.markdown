@@ -10,11 +10,10 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
 
 ## Simple Example:
 
-    > as example, we assume 2 functions (asynchronous APIs for dealing with penguins) The only convention is that successCallBack(returnedResult) will be called by these APIs on success and errorCallBack on fails
+> as example, we assume 2 functions (asynchronous APIs for dealing with penguins) The only convention is that successCallBack(returnedResult) will be called by these APIs on success and errorCallBack on fails
+
         loadPenguin(nickName, successCallBack, errorCallBack)
         loadPenguinFamily(father, mother, successCallBack, errorCallBack)
-     
-
 
 
     // now, let's see how we load some Penguins
