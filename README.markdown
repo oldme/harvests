@@ -1,23 +1,25 @@
-SwarmHarvest is an attempt to sort out the ugliness of the asynchronous callbacks without promises or control flow libraries.
-Harvest doesn't attempt to resolve all imaginable cases involving asynchronous code but based on my experience it cover all the real cases found in real projects.
+>SwarmHarvest is an attempt to sort out the ugliness of the asynchronous callbacks without promises or control flow libraries.
 
- Promises look like a good idea but they were met with an obvious (but passive) resistance. In node.js, promises have multiple implementations but many implementations looks too bloated,complex, etc.
- I personally prefer to not use any promise or flow control library because they all failed my internal beauty tests and I always hoped for a better alternative.
+>Promises look like a good idea but they were met with an obvious (but passive) resistance. In node.js, promises have multiple implementations but many implementations looks too bloated,complex, etc.
+>I personally prefer to not use any promise or flow control library because they all failed my internal beauty tests and I always hoped for a better alternative.
 
- An harvest handles in a very simple way the dependencies calls.
- The main idea is to create an environment where you continue to call asynchronous functions as usual.
- The only thing that changes is the syntax of calling those functions. You call those functions in a Harvest context that magically detects dependencies, make calls,etc.
+>An harvest handles the dependencies calls alone, you don't have to describe the flow.The main idea is to create an environment where you continue to call asynchronous functions as usual.
+
+>The only thing that changes is the syntax for calling those functions. You call the functions in a Harvest context that magically detects dependencies, make calls, etc.
+
+>Harvest doesn't attempt to resolve all imaginable cases involving asynchronous code but based on my experience it covers the real cases found in real projects. No need for promises, new flow control and wired syntax.
 
 ## Simple Example:
 
-> as example, we assume 2 functions (asynchronous APIs for dealing with penguins) The only convention is that successCallBack(returnedResult) will be called by these APIs on success and errorCallBack on fails
+> For example, we have 2 functions (asynchronous APIs for dealing with penguins)
+> The only convention is that successCallBack(returnedResult) will be called by these APIs on success and errorCallBack on fails
 
         loadPenguin(nickName, successCallBack, errorCallBack)
         loadPenguinFamily(father, mother, successCallBack, errorCallBack)
 
+> now, let's see how we load some Penguins
 
-    // now, let's see how we load some Penguins
-        var harvest = require("asyn-harvest").create();
+         var harvest = require("harvests").create();
 
          harvest.load('father', loadPenguin, 'MrPenguin');
          harvest.load('mother', loadPenguin, 'MrsPenguin');
@@ -33,7 +35,7 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
                       console.log("Well, move those penguins to the South Pole...");
          });
 
-    //for a complete exemplification, look in test/penguin.js
+> for a complete example, look in test/penguin.js
 
 
 
@@ -41,8 +43,9 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
 
 ### create a new harvest context
 
-      var harvest = require("asyn-harvest").create();
+      var harvest = require("harvests").create(contextBindingCallBack, allowMonkeyTail );
 
+>>Note! The name is harvests not harvest
 >create() can take 2 optional arguments: contextBindingCallBack and allowMonkeyTail.    contextBindingCallBack is a function that can create an wrapper for callbacks used during harvesting
 > contextBindingCallBack  is useful in the context of a multi tenancy and multi user, shared systems. For an example, look at createSwarmCallBack in swarmESB adapters
 
@@ -87,7 +90,9 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
 
 >instruct the context what to do in case of a fail. Aa uncaught exception in any call or call of error functions can cause the failure of the harvest
 
-    harvest.onFail(handler)  //handler is a callback that will be called with an error object (the error cause)
+    harvest.onFail(handler)
+
+>handler is a callback that will be called with an error object (the cause of error )
 
 
 ### finished() 
@@ -96,7 +101,7 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
 
     harvest.finished()
 
->it will return -1 it finished by error, 0 if not finished (still working or waiting callbacks), 1 for success
+>if will return -1 it finished by error, 0 if not finished (still working or waiting callbacks), 1 for success
 
 ### stop the harvest by force...
 
@@ -107,13 +112,17 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
 
 
 ## ToDOs
-   #### maybe add chains,eg.  wait('variable.field')
 
-   #### detect circular dependencies!?
+> Create more call conventions for standard node.js APIs, other common libraries (anybody want to help here?)
 
-   #### handle the case with multiple result calls that change the same object. I think promises don't handle this case, too, right? How usual is this case !?
+> Maybe: create wrappers to accommodate with standard node.js APIs or other common libraries
 
-   #### create more conventions for standard node.js APIs, other common libraries (anybody want to help here?)
+> Maybe: Implement a solution for possible stack overflow issues when dealing with 'fake' asynchronous functions that return immediately. Somebody needs it? Just ask!
 
-   #### maybe create wrappers to accommodate with standard node.js APIs or other common libraries
+> Maybe: detect circular dependencies!?  Somebody needs it? Just ask!
+
+> Maybe: add chains,eg.  wait('variable.field'). Somebody needs it? Just ask!
+
+> Maybe: handle the case with multiple result calls that change the same object. I think promises don't handle this case well, too. How usual is this case !?
+
 
