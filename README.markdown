@@ -10,12 +10,11 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
 
 ## Simple Example:
 
-    // as example, we assume 2 functions (asynchronous APIs for dealing with penguins)
-    
+    > as example, we assume 2 functions (asynchronous APIs for dealing with penguins) The only convention is that successCallBack(returnedResult) will be called by these APIs on success and errorCallBack on fails
         loadPenguin(nickName, successCallBack, errorCallBack)
         loadPenguinFamily(father, mother, successCallBack, errorCallBack)
      
->   // the result of the functionApi is not useful, it is called the convention is that successCallBack(returnedResult) will be called by these APIs on succees and errorCallBack on fails
+
 
 
     // now, let's see how we load some Penguins
@@ -26,7 +25,8 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
          harvest.load('family', loadPenguinFamily, wait('father'), wait('mother'));
 
          harvest.onSuccess(function(harvest){
->            console.log("All those 3 requests are completed and in harvest.family we got those cute penguin children");
+            console.log("All those 3 requests are completed');
+            console.log('In harvest.family we got those cute penguin children objects");
             }
          });
 
@@ -65,7 +65,8 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
 
 ### do()
 
-> 'do' execute the function as soon as all their free variables are ready. The result is not useful. do don't change the success or fail status for a harvest
+> 'do' execute the function as soon as all their free variables are ready. The callback result will not change the success or fail status for a harvest
+
     harvest.do(functionApi, ... )
 
 ### Can use third party APIs, prefer other calling conventions?
