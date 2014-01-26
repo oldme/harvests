@@ -32,45 +32,42 @@ An harvest handles the dependencies calls, you don't have to describe the flow. 
 
 > for a complete example, look in test/penguin.js
 
-Promises look like a good idea but they were met with some resistance (passive resistance, get used only be some people, many prefer callbacks). In node.js, promises have multiple implementations but many implementations looks too bloated,complex, etc.
-I personally prefer to not use any promise or flow control library because they all failed my internal beauty tests and I always hoped for a better alternative (as syntax, simplicity and intuitive behaviour).
-
-Flow controls libraries, like 'async', looks interesting but a bit intimidating and with a learning curve (learning about cargo and other stuff is funny,not!).
-
-Harvest idea is based on the insight that you are doing calls to return values, doing calls in parallel, series, whatever!  A harvest is doing stuff in parallel when is possible but ideally you don't have to think much about such things.
 
 The syntax for calling asynchronous functions is fairly simple, use a function from the API (let,letAt, load, loadAt, xlet, xletAt) and remove callback arguments altogether.
 
-Harvest doesn't attempt to resolve all imaginable cases involving asynchronous code but based on my experience it covers the real cases found in real projects. There remains little need for promises, new flow control and wired syntax.
 
 
-##    Very simple API:
+##    Simple API:
 
-### create a new harvest context
+### create() a new harvest context
 
-      var harvest = require("harvests").create(contextBindingCallBack, allowMonkeyTail );
+      var harvest = require("harvests").create(contextBindingCallBack, preventStackOverflow);
 
 >>Note! The name is harvests not harvest
 >create() can take 2 optional arguments: contextBindingCallBack and allowMonkeyTail.    contextBindingCallBack is a function that can create an wrapper for callbacks used during harvesting
 > contextBindingCallBack  is useful in the context of a multi tenancy and multi user, shared systems. For an example, look at createSwarmCallBack in swarmESB adapters
 
-> allowMonkeyTail is to enable use of @ as a mark of free variables (if you prefer to not use wait). For security reasons, use of @ is disabled by default
+> preventStackOverflow, do even synchronous returns asynchronous and prevent growth of the stack
 
 
 ### wait(variableName)
 
-    wait(variableName) signals that a free variable needs to be computed before execution
+    wait(variableName) //mark a free variable that should be computed before current call
 
 
 ### load() a variable in context;
 
     harvest.load(variableName, functionApi, ... )
 
-### loadAt() - load in an array in a context at a specified position
+### loadAt()
+
+    load in an array in a context at a specified position
 
         harvest.loadAt(arrayName, index,  functionApi, ... )
 
-### let() load a variable in harvest's context using node.js convention ( function(err,result) )
+### let()
+
+    load a variable in harvest's context using node.js convention ( function(err,result) )
 
     harvest.let(variableName, functionApi, ... )
 
@@ -85,14 +82,6 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
 
     harvest.do(functionApi, ... )
 
-### Can use third party APIs, prefer other calling conventions?
-
->You can create or reuse your own conventions for getting results from the asynchronous functions
-
-     harvest.xlet(variableName, conventionFunction, callback)
-     harvest.xletAt(variableName, conventionFunction, callback)
-
-> conventionFunction is a function that knows how to call the callback. Please,look in the harvest.js for how defaultHarvestCallConvention is implemented, other conventions can be easily created
 
 ### onSuccess()
 
@@ -123,6 +112,25 @@ Harvest doesn't attempt to resolve all imaginable cases involving asynchronous c
 >After calling the success or fail handlers, the harvest is automatically stopped if the handlers were not overwritten
 
      harvest.stop()
+
+### Can I use other third party API or like other calling conventions?
+
+>You can create or reuse your own call conventions for getting results from the asynchronous functions. let and load functions provide support for the most common ones.
+
+     harvest.xlet(variableName, conventionFunction, callback)
+     harvest.xletAt(variableName, conventionFunction, callback)
+
+> conventionFunction functions are easy to write. Please,look in the harvest.js for how defaultHarvestCallConvention is implemented
+
+## What about promises, control flow libraries, etc?
+
+Promises look like a good idea but they were met with some resistance (rather passive resistance, they are used only be some people, many prefer callbacks). In node.js, promises have multiple implementations but many implementations looks too bloated,complex, etc.
+I personally prefer to not use any promise or flow control library because they all failed my internal beauty tests and I always hoped for a better alternative (as syntax, simplicity and intuitive behaviour).
+
+Flow controls libraries, like 'async', looks interesting but a bit intimidating and with a learning curve (learning about cargo and other stuff is funny,not!).
+
+Harvest idea is based on the insight that you are doing calls to return values, doing calls in parallel, series, whatever!  A harvest is doing stuff in parallel when is possible but ideally you don't have to think much about such things.
+Harvest doesn't attempt to resolve all imaginable cases involving asynchronous code but based on my experience it covers the usual cases found in real projects. My impression is that remains little need for promises, flow control libraries, etc.
 
 
 ## ToDOs
