@@ -1,110 +1,58 @@
 //simulate the painting of a penguin children. paint the male babies blue and female babies pink if their mother asynchronously agree
 //test if all penguins got painted
 
-var harvest = require("../lib/harvest.js").new();
+var harvest = require("../lib/harvest.js").new(undefined, true);
+var data    = require("./penguinsData.js");
 var assert  = require("assert");
 
-var penguins = {
-    "MrPenguin":{
-      nick:"MrPenguin"
-    },
-    "MrsPenguin":{
-        nick:"MrsPenguin"
-    },
-    "Alice":{
-        colour:"black",
-        sex:"female",
-        father:"MrPenguin",
-        mother:"MrsPenguin"
-    },
-    "Bob":{
-        colour:"green",
-        sex:"male",
-        father:"MrPenguin",
-        mother:"MrsPenguin"
-    },
-    "Charlie":{
-        colour:"black",
-        sex:"male",
-        father:"MrPenguin",
-        mother:"MrsPenguin"
-    },
-    "Dostoevsky":{
-        colour:"white",
-        sex:"male"
-    }
-}
+process.on('uncaughtException', function (err) {
+    console.log(err, err.stack);
+});
 
-function loadPenguin(nick,success, error){
-    if(penguins[nick]){
-        success(penguins[nick]);
-    } else {
-        error(new Error("Penguin not available: " +nick));
-    }
-}
+setTimeout(function(){
+    assert.equal(harvest.paintingComplete, true);
+}, 300)
 
-function loadPenguinFamily(father, mother, success, error){
-        var ret = [];
-        for(var v in penguins){
-            if(penguins[v].father == father.nick && penguins[v].mother == mother.nick){
-                ret.push(penguins[v]);
-            }
-        }
-    success(ret);
-}
 
-function paintPenguin(penguin, newColour){
-    penguin.colour = newColour;
-}
+harvest.onFail(function(error){
+    console.log("Well, move those penguins to the South Pole...");
+});
 
-function childPenguinsShouldBeBlue(father, mother){
-    for(var v in penguins){
-        if(penguins[v].father == father.nick && penguins[v].mother == mother.nick){
-            if(penguins[v].sex == "male"){
-                assert.equal(penguins[v],"blue");
-            } else {
-                assert.equal(penguins[v],"pink");
-            }
-        }
-    }
-}
+harvest.load('father',data.loadPenguin, 'MrPenguin');
+harvest.load('mother',data.loadPenguin, 'MrsPenguin');
+harvest.load('family',data.loadPenguinFamily, wait('father'), wait('mother'));
 
-function givePaintAgreement(parent,child,colour,success, error){
-    success(true);
-}
-
-harvest.load('father',loadPenguin, 'MrPenguin');
-harvest.load('mother',loadPenguin, 'MrsPenguin');
-harvest.load('family',loadPenguinFamily, '@father', '@mother');
-
-harvest.onSuccess(function(harvest){
+harvest.onSuccess(function(harvestContext){
     //harvest.family is an array with little penguins
-        for(var at = 0; at < harvest.family.length; at++){
-            var littlePenguin = harvest.family[at];
+    console.log("Intermediate success!");
+        for(var at = 0; at < harvestContext.family.length; at++){
+            var littlePenguin = harvestContext.family[at];
             var color = littlePenguin.sex == 'male'?'blue':'pink';
-            harvest.loadAt('agreementFather', at, givePaintAgreement, wait('father'), littlePenguin, color);
-            harvest.loadAt('agreementMother', at, givePaintAgreement, wait('mother'), littlePenguin, color);
+            console.log("Asking agreement for ",littlePenguin.nick);
+            harvestContext.loadAt('agreementFather', at, data.givePaintAgreement, wait('father'), littlePenguin, color);
+            harvestContext.loadAt('agreementMother', at, data.givePaintAgreement, wait('mother'), littlePenguin, color);
         }
 
     //now that we got or first phase, we can redefine the success to ever more
-    harvest.onSuccess(function(harvest){
-            for(var i = 0; i < harvest.family.length; i++){
+    harvest.onSuccess(function(harvestContext){
+            console.log("Second success!");
+
+
+            for(var i = 0; i < harvestContext.family.length; i++){
                 var littlePenguin = harvest.family[i];
                 var color = littlePenguin.sex == 'male'?'blue':'pink';
-                if(harvest.agreementFather[i] && harvest.agreementMother[i]){
-                    harvest.do('paintPenguin',littlePenguin,color, wait(father));  // not used but could be useful
+                if(harvestContext.agreementFather[i] && harvestContext.agreementMother[i]){
+                    console.log("Painting ",littlePenguin.nick);
+                    harvestContext.do(data.paintPenguin,littlePenguin,color, wait('father'));  // wait, not used but could be useful
+                } else {
+                    console.log("Agreements:", harvestContext.agreementFather[i] , harvestContext.agreementMother[i]);
                 }
             }
 
-            harvest.set('paintingComplete', true);
-            harvest.do('childPenguinsShouldBeBlue',wait('father'), wait('mother'), wait('paintingComplete'));
+            harvestContext.set('paintingComplete', true);
+            console.log("Painting...");
+            harvestContext.do(data.childPenguinsShouldBeBlue,wait('father'), wait('mother'), wait('paintingComplete'));
         });
 });
 
-harvest.onError = function(harvest){
-    console.log("Well, move those penguins to the South Pole...");
-}
 
-setTimeout(function(){
-       assert.equal(harvest.paintingComplete, true);
-}, 100)
