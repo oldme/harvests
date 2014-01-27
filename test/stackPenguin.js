@@ -1,7 +1,7 @@
 //simulate the painting of a penguin children. paint the male babies blue and female babies pink if their mother asynchronously agree
 //test if all penguins got painted
 
-var harvest = require("../lib/harvest.js").new(undefined, false);
+var harvest = require("../lib/harvest.js").new(undefined, true);
 var data    = require("./penguinsData.js");
 var assert  = require("assert");
 

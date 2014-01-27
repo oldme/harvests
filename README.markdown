@@ -7,26 +7,20 @@ An harvest handles the dependencies calls, you don't have to describe the flow. 
 > For example, we have 2 functions (asynchronous APIs for dealing with penguins)
 > The only convention is that successCallBack(returnedResult) will be called by these APIs on success and errorCallBack on fails
 
-        loadPenguin(nickName, successCallBack, errorCallBack)
-        loadPenguinFamily(father, mother, successCallBack, errorCallBack)
+        loadPenguin(nickName, callBack)
+        loadPenguinFamily(father, mother, callBack)
 
 > now, let's see how we load some Penguins
 
-         var harvest = require("harvests").create();
+        var harvest = require("harvests").create();
 
-         harvest.load('father', loadPenguin, 'MrPenguin');
-         harvest.load('mother', loadPenguin, 'MrsPenguin');
-         harvest.load('family', loadPenguinFamily, wait('father'), wait('mother'));
+        harvest.let('father', loadPenguin, 'MrPenguin');
+        harvest.let('mother', loadPenguin, 'MrsPenguin');
+        harvest.let('family', loadPenguinFamily, wait('father'), wait('mother'));
 
-         harvest.onSuccess(function(harvest){
-            console.log("All those 3 requests are completed');
-            console.log('In harvest.family we got those cute penguin children objects");
-            }
-         });
-
-         harvest.onError(function(harvest){
-                      console.log("Well, move those penguins to the South Pole...");
-         });
+        harvest.do(function(family){
+            console.log(family); //also in  harvest.father, harvest.mother, harvest.family you got values
+        }, wait('family') );
 
 > for a complete example, look in test/penguin.js
 
@@ -56,17 +50,6 @@ The syntax for calling asynchronous functions is fairly simple, use a function f
 
 > wait is how you say that a variable should be computed before current calling current statement
 
-
-### load() a variable in context;
-
-    harvest.load(variableName, functionApi, ... )
-
-### loadAt()
-
-    load in an array in a context at a specified position
-
-        harvest.loadAt(arrayName|objectName, index,  functionApi, ... )
-
 ### let()
 
 > load a variable in harvest's context using node.js convention ( function(err,result) ). Similar with load but using node.js standard calling convention
@@ -76,6 +59,19 @@ The syntax for calling asynchronous functions is fairly simple, use a function f
 ### letAt() - load in an array in a context at a specified position, use node.js convention
 
     harvest.letAt(arrayName|objectName, index,  functionApi, ... )
+
+### load() a variable in context;
+
+    harvest.load(variableName, functionApi, ... )
+
+> load functions expect that callbacks take as last 2 parameters functions to report success and error (as in penguin example above).
+
+### loadAt()
+
+    load in an array in a context at a specified position
+
+        harvest.loadAt(arrayName|objectName, index,  functionApi, ... )
+
 
 
 ### do()

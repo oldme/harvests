@@ -36,28 +36,28 @@ var penguins = {
     }
 }
 
-module.exports.loadPenguin = function (nick,success, error){
+module.exports.loadPenguin = function (nick, callback){
     if(penguins[nick]){
-        success(penguins[nick]);
+        callback(undefined, penguins[nick]);
     } else {
-        error(new Error("Penguin not available: " +nick));
+        callback(new Error("Penguin not available: " + nick));
     }
 }
 
-module.exports.loadPenguinFamily = function (father, mother, success, error){
+module.exports.loadPenguinFamily = function (father, mother, callback){
     var ret = [];
     for(var v in penguins){
         if(penguins[v].father == father.nick && penguins[v].mother == mother.nick){
             ret.push(penguins[v]);
         }
     }
-    success(ret);
+    callback(undefined, ret);
 }
 
 module.exports.paintPenguin = function(penguin, newColour, callback){
     console.log(penguin.nick, " is now ", newColour);
     penguin.colour = newColour;
-    callback(undefined,true);
+    callback(undefined, true);
 }
 
     module.exports.childPenguinsShouldBeBlue = function (father, mother){
@@ -73,7 +73,7 @@ module.exports.paintPenguin = function(penguin, newColour, callback){
     console.log("Checked and done!");
 }
 
-module.exports.givePaintAgreement = function (parent,child,colour,success, error){
-    success(true);
+module.exports.givePaintAgreement = function (parent,child,colour,callback){
+    callback(undefined, true);
 }
 

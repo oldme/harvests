@@ -1,7 +1,7 @@
 {
   "name": "harvests",
   "description": "An middle way between callbacks hell and promises. Get simpler and cleaner code, optimised for harvesting asynchronous functions that follow a very simple convention",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "homepage": "https://github.com/salboaie/SwarmHarvest",
   "author": {
     "name": "Alboaie Sinica",
@@ -41,7 +41,7 @@
       "url": "http://www.gnu.org/licenses/lgpl.html"
     }
   ],
-  "_id": "harvests@0.1.5",
+  "_id": "harvests@0.1.6",
   "dependencies": {},
   "optionalDependencies": {},
   "_engineSupported": true,
