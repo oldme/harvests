@@ -38,12 +38,11 @@ The syntax for calling asynchronous functions is fairly simple, use a function f
 
       var harvest = require("harvests").create(contextBindingCallBack, preventStackOverflow);
 
->Note! The name of the module is harvests not harvest
+>Note! The name of the module is 'harvests' not 'harvest'
 
+> create() can take 2 optional arguments: contextBindingCallBack and preventStackOverflow.
 
-> create() can take 2 optional arguments: contextBindingCallBack and allowMonkeyTail.    contextBindingCallBack is a function that can create an wrapper for callbacks used during harvesting
-
-> contextBindingCallBack  is useful in the context of a multi tenancy and multi user, shared systems. For an example, look at createSwarmCallBack in swarmESB adapters
+>contextBindingCallBack is a function that can create an wrapper for callbacks used during harvesting. This is useful in the context of a multi tenancy and multi user systems. For an example, look at createSwarmCallBack in swarmESB adapters
 
 > preventStackOverflow: force asynchronous returns even for synchronous callbacks returns, prevents growth of the stack
 
@@ -60,7 +59,9 @@ The syntax for calling asynchronous functions is fairly simple, use a function f
 
     harvest.let(variableName, functionApi, ... )
 
-### letAt() - load in an array or in an object, member of the context at a specified position (specified member of the object), use node.js standard calling convention
+### letAt()
+
+ > load a value in an array or in an object ( member of the context at a specified position or specified name of the object), use node.js standard calling convention
 
     harvest.letAt(arrayName|objectName, index,  functionApi, ... )
 
@@ -141,22 +142,24 @@ The syntax for calling asynchronous functions is fairly simple, use a function f
 Promises look like a good idea but they were met with some resistance (rather passive resistance, they are used only be some people, many prefer callbacks). In node.js, promises have multiple implementations but many implementations looks too bloated,complex, etc.
 I personally prefer to not use any promise or flow control library because they all failed my internal beauty tests and I always hoped for a better alternative (as syntax, simplicity and intuitive behaviour).
 
-Flow controls libraries, like 'async', are interesting but a bit intimidating and with a learning curve.
+Harvest idea is based on the insight that you are doing calls to return values. Doing calls in parallel, series, whatever, should not be your real concern!
+A harvest is doing stuff in parallel when is possible but ideally you don't have to think much about such things.
 
-Harvest idea is based on the insight that you are doing calls to return values, doing calls in parallel, series, whatever!  A harvest is doing stuff in parallel when is possible but ideally you don't have to think much about such things.
-Harvest doesn't attempt to resolve all imaginable cases involving asynchronous code but it covers the usual cases found in real projects. My impression is that remains few cases where you need promises, flow control libraries, etc.
+Harvests don't try to resolve all imaginable cases involving asynchronous code but it covers the usual cases found in real projects.
+I would love to see the cases when you need promises, flow control libraries, etc.
 
 
 ## ToDOs
 
-> Create more call conventions for other common libraries (anybody want to help here?)
+> Create more call conventions for other common libraries? What call conventions do you use?
+
+> It is possible to implement lazy loading. Anybody need it? A lazy let function could be implemented fairly easy .
 
 > Maybe: detect circular dependencies!?  Somebody needs it? Just ask!
 
+> Maybe: handle the case with multiple result calls that change the same object. I think promises don't handle this case well, and need some wrapping.
+
 > Maybe: add chains,eg.  wait('variable.field').
 
-> Maybe: handle the case with multiple result calls that change the same object. I think promises don't handle this case well, too. How usual is this case !?
-
-> It is easy and possible to implement lazy loading (load only when other value needs it)
 
 
