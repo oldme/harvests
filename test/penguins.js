@@ -5,9 +5,10 @@ var harvest = require("../lib/harvest.js").new(undefined, true);
 var data    = require("./penguinsData.js");
 var assert  = require("assert");
 
+/*
 process.on('uncaughtException', function (err) {
     console.log(err, err.stack);
-});
+}); */
 
 setTimeout(function(){
     assert.equal(harvest.paintingComplete, true);
@@ -33,25 +34,25 @@ harvest.onSuccess(function(harvestContext){
             harvestContext.loadAt('agreementMother', at, data.givePaintAgreement, wait('mother'), littlePenguin, color);
         }
 
+    //harvestContext.set('gotAgreement', true, wait('agreementFather'), wait('agreementMother'));
+
     //now that we got or first phase, we can redefine the success to ever more
     harvest.onSuccess(function(harvestContext){
             console.log("Second success!");
-
+            harvestContext.set('paintingComplete', true, wait('completed'));
 
             for(var i = 0; i < harvestContext.family.length; i++){
                 var littlePenguin = harvest.family[i];
                 var color = littlePenguin.sex == 'male'?'blue':'pink';
                 if(harvestContext.agreementFather[i] && harvestContext.agreementMother[i]){
                     console.log("Painting ",littlePenguin.nick);
-                    harvestContext.do(data.paintPenguin,littlePenguin,color, wait('father'));  // wait, not used but could be useful
+                    harvestContext.letAt('completed', i, data.paintPenguin, littlePenguin, color);  // wait, not used but could be useful
                 } else {
                     console.log("Agreements:", harvestContext.agreementFather[i] , harvestContext.agreementMother[i]);
                 }
             }
 
-            harvestContext.set('paintingComplete', true);
-            console.log("Painting...");
-            harvestContext.do(data.childPenguinsShouldBeBlue,wait('father'), wait('mother'), wait('paintingComplete'));
+            harvestContext.do(data.childPenguinsShouldBeBlue,harvestContext.father, harvestContext.mother, wait('completed'));
         });
 });
 

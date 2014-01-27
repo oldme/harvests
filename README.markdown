@@ -1,6 +1,4 @@
-SwarmHarvest is an attempt to sort out the ugliness of the asynchronous callbacks without promises or control flow libraries.
-
-### Warning, still fairly beta, barely passing some tests. I want your feedback!
+Harvests library is an attempt to sort out the ugliness of the asynchronous callbacks without promises or control flow libraries.
 
 An harvest handles the dependencies calls, you don't have to describe the flow. The main idea is to create an environment where you continue to use asynchronous functions as usual but with a syntax that resemble synchronous calls.
 
@@ -33,26 +31,30 @@ An harvest handles the dependencies calls, you don't have to describe the flow. 
 > for a complete example, look in test/penguin.js
 
 
-The syntax for calling asynchronous functions is fairly simple, use a function from the API (let,letAt, load, loadAt, xlet, xletAt) and remove callback arguments altogether.
+The syntax for calling asynchronous functions is fairly simple, use a function from the API (let,letAt, load, loadAt, xlet, xletAt), add some wait calls where needed and remove callback arguments altogether.
 
 
-
-##    Simple API:
+##  Simple API:
 
 ### create() a new harvest context
 
       var harvest = require("harvests").create(contextBindingCallBack, preventStackOverflow);
 
->>Note! The name is harvests not harvest
->create() can take 2 optional arguments: contextBindingCallBack and allowMonkeyTail.    contextBindingCallBack is a function that can create an wrapper for callbacks used during harvesting
+>Note! The name of the module is harvests not harvest
+
+
+> create() can take 2 optional arguments: contextBindingCallBack and allowMonkeyTail.    contextBindingCallBack is a function that can create an wrapper for callbacks used during harvesting
+
 > contextBindingCallBack  is useful in the context of a multi tenancy and multi user, shared systems. For an example, look at createSwarmCallBack in swarmESB adapters
 
-> preventStackOverflow, do even synchronous returns asynchronous and prevent growth of the stack
+> preventStackOverflow: force asynchronous returns even for synchronous callbacks returns, prevents growth of the stack
 
 
 ### wait(variableName)
 
-    wait(variableName) //mark a free variable that should be computed before current call
+    wait(variableName)
+
+> wait is how you say that a variable should be computed before current calling current statement
 
 
 ### load() a variable in context;
@@ -63,24 +65,32 @@ The syntax for calling asynchronous functions is fairly simple, use a function f
 
     load in an array in a context at a specified position
 
-        harvest.loadAt(arrayName, index,  functionApi, ... )
+        harvest.loadAt(arrayName|objectName, index,  functionApi, ... )
 
 ### let()
 
-    load a variable in harvest's context using node.js convention ( function(err,result) )
+> load a variable in harvest's context using node.js convention ( function(err,result) ). Similar with load but using node.js standard calling convention
 
     harvest.let(variableName, functionApi, ... )
 
 ### letAt() - load in an array in a context at a specified position, use node.js convention
 
-    harvest.letAt(arrayName, index,  functionApi, ... )
+    harvest.letAt(arrayName|objectName, index,  functionApi, ... )
 
 
 ### do()
 
-> 'do' execute the function as soon as all their free variables are ready. The callback result will not change the success or fail status for a harvest
+> 'do' execute the function as soon as all their free variables are ready. The callback result will not change the success or fail status for a harvest. Waits until wait variables are fulfilled.
 
     harvest.do(functionApi, ... )
+
+> do can be used instead of onSuccess to detect intermediate phases and to execute your code when becomes possible
+
+### set()
+
+> 'set' executes an assignment but waits until wait variables are fulfilled
+
+    harvest.set(functionApi, value, ... )
 
 
 ### onSuccess()
@@ -95,7 +105,7 @@ The syntax for calling asynchronous functions is fairly simple, use a function f
 
     harvest.onFail(handler)
 
->handler is a callback that will be called with an error object (the cause of error )
+>handler is a callback that will be called with an error object (the cause of error ) , and with the name of the variable that could not be loaded
 
 
 ### finished() 
@@ -127,10 +137,10 @@ The syntax for calling asynchronous functions is fairly simple, use a function f
 Promises look like a good idea but they were met with some resistance (rather passive resistance, they are used only be some people, many prefer callbacks). In node.js, promises have multiple implementations but many implementations looks too bloated,complex, etc.
 I personally prefer to not use any promise or flow control library because they all failed my internal beauty tests and I always hoped for a better alternative (as syntax, simplicity and intuitive behaviour).
 
-Flow controls libraries, like 'async', looks interesting but a bit intimidating and with a learning curve (learning about cargo and other stuff is funny,not!).
+Flow controls libraries, like 'async', are interesting but a bit intimidating and with a learning curve.
 
 Harvest idea is based on the insight that you are doing calls to return values, doing calls in parallel, series, whatever!  A harvest is doing stuff in parallel when is possible but ideally you don't have to think much about such things.
-Harvest doesn't attempt to resolve all imaginable cases involving asynchronous code but based on my experience it covers the usual cases found in real projects. My impression is that remains little need for promises, flow control libraries, etc.
+Harvest doesn't attempt to resolve all imaginable cases involving asynchronous code but it covers the usual cases found in real projects. My impression is that remains few cases where you need promises, flow control libraries, etc.
 
 
 ## ToDOs

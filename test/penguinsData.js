@@ -54,8 +54,10 @@ module.exports.loadPenguinFamily = function (father, mother, success, error){
     success(ret);
 }
 
-module.exports.paintPenguin = function(penguin, newColour){
+module.exports.paintPenguin = function(penguin, newColour, callback){
+    console.log(penguin.nick, " is now ", newColour);
     penguin.colour = newColour;
+    callback(undefined,true);
 }
 
     module.exports.childPenguinsShouldBeBlue = function (father, mother){
