@@ -97,7 +97,7 @@ The syntax for calling asynchronous functions is fairly simple, use a function f
 >handler is a callback that will be called with an error object (the cause of error ) , and with the name of the variable that could not be loaded
 
 
-### finished() 
+### finished()
 
 >you can get the status of the harvest anytime ( in a timeout for example, etc)
 
@@ -153,11 +153,11 @@ I would love to see the cases when you need promises, flow control libraries, et
 
 > Create more call conventions for other common libraries? What call conventions do you use?
 
-> It is possible to implement lazy loading. Anybody need it? A lazy let function could be implemented fairly easy .
+> It is possible to implement lazy loading. A lazy let function could be implemented fairly easy .
 
 > Maybe: detect circular dependencies!?  Somebody needs it? Just ask!
 
-> Maybe: handle the case with multiple result calls that change the same object. I think promises don't handle this case well, and need some wrapping.
+> Maybe: handle the case with multiple result calls that change the same object. I think promises have the same problem and a wrapper is required.
 
 > Maybe: add chains,eg.  wait('variable.field').
 
