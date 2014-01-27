@@ -22,7 +22,11 @@ An harvest handles the dependencies calls, you don't have to describe the flow. 
             console.log(family); //also in  harvest.father, harvest.mother, harvest.family you got values
         }, wait('family') );
 
-> for a complete example, look in test/penguin.js
+        harvest.onFail(function(error, variable, index){
+            console.log("Well, move those penguins to the South Pole...", error, variable, index);
+        });
+
+> for a full example with complex cases, look in test/penguin.js
 
 
 The syntax for calling asynchronous functions is fairly simple, use a function from the API (let,letAt, load, loadAt, xlet, xletAt), add some wait calls where needed and remove callback arguments altogether.
@@ -56,21 +60,9 @@ The syntax for calling asynchronous functions is fairly simple, use a function f
 
     harvest.let(variableName, functionApi, ... )
 
-### letAt() - load in an array in a context at a specified position, use node.js convention
+### letAt() - load in an array or in an object, member of the context at a specified position (specified member of the object), use node.js standard calling convention
 
     harvest.letAt(arrayName|objectName, index,  functionApi, ... )
-
-### load() a variable in context;
-
-    harvest.load(variableName, functionApi, ... )
-
-> load functions expect that callbacks take as last 2 parameters functions to report success and error (as in penguin example above).
-
-### loadAt()
-
-    load in an array in a context at a specified position
-
-        harvest.loadAt(arrayName|objectName, index,  functionApi, ... )
 
 
 
@@ -127,6 +119,22 @@ The syntax for calling asynchronous functions is fairly simple, use a function f
      harvest.xletAt(variableName, conventionFunction, callback)
 
 > conventionFunction functions are easy to write. Please,look in the harvest.js for how defaultHarvestCallConvention is implemented
+
+
+### load()  similar with let, different calling convention
+
+> loads a variable in context with success, error callback convention;
+
+    harvest.load(variableName, functionApi, ... )
+
+> functionApi takes as last 2 parameters, 2 functions to report success and error
+
+### loadAt()
+
+> load in an array in a context at a specified position, using success, error callback convention;
+
+        harvest.loadAt(arrayName|objectName, index,  functionApi, ... )
+
 
 ## What about promises, control flow libraries, etc?
 
