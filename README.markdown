@@ -73,13 +73,13 @@ The syntax for calling asynchronous functions is fairly simple, use a function f
 
     harvest.do(functionApi, ... )
 
-> do can be used instead of onSuccess to detect intermediate phases and to execute your code when becomes possible
+> do can be used instead of onSuccess to detect intermediate phases and to execute your code when becomes possible. The functionApi arguments will be the waiting parameters.
 
 ### set()
 
 > 'set' executes an assignment but waits until wait variables are fulfilled
 
-    harvest.set(functionApi, value, ... )
+    harvest.set(name, value, ... )
 
 
 ### onSuccess()
