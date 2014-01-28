@@ -2,7 +2,7 @@ Harvests library is an attempt to sort out the ugliness of the asynchronous call
 
 An harvest handles the dependencies calls, you don't have to describe the flow. The main idea is to create an environment where you continue to use asynchronous functions as usual but with a syntax that resemble synchronous calls.
 
-## Example 1: reading the conetnt of a file content
+## Example 1: reading the content of a file
 
         harvest.let("myFileContent", fs.readFile, "fileName.txt");  
         harvest.do(console.log, wait("myFileContent"));  
