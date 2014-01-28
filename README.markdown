@@ -140,10 +140,10 @@ The syntax for calling asynchronous functions is fairly simple, use a function f
 ## What about promises, control flow libraries, etc?
 
 Promises look like a good idea but they were met with some resistance (rather passive resistance, they are used only be some people, many prefer callbacks). In node.js, promises have multiple implementations but many implementations looks too bloated,complex, etc.
-I personally prefer to not use any promise or flow control library because they all failed my internal beauty tests and I always hoped for a better alternative (as syntax, simplicity and intuitive behaviour).
+Form me promise and flow control libraries failed my internal beauty tests and I always hoped for a better alternative (as syntax, intuitive behaviour, zero learning curve).
 
 Harvest idea is based on the insight that you are doing calls to return values. Doing calls in parallel, series, whatever, should not be your real concern!
-A harvest is doing stuff in parallel when is possible but ideally you don't have to think much about such things.
+A harvest is doing stuff in parallel when is possible but  you don't have to think about such things (except if you are going to do many, many requests,etc).
 
 Harvests don't try to resolve all imaginable cases involving asynchronous code but it covers the usual cases found in real projects.
 I would love to see the cases when you need promises, flow control libraries, etc.
