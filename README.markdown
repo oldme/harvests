@@ -37,6 +37,15 @@ An harvest handles the dependencies calls, you don't have to describe the flow. 
 > for a full example with complex cases, look in test/penguin.js
 
 
+## Example 3:
+        //use pack and load those penguins in an array
+        penguinNames.map(function (name){
+             harvest.pack("realPenguins", loadPenguin, name);
+             //harvest.letAt("realPenguins", name, loadPenguin, name); //similar results but the result is an object
+         });
+
+         harvest.do(workWithPenguins, wait('realPenguins'));
+
 The syntax for calling asynchronous functions is fairly simple, use a function from the API (let,letAt, load, loadAt, xlet, xletAt), add some wait calls where needed and remove callback arguments altogether.
 
 
@@ -66,6 +75,14 @@ The syntax for calling asynchronous functions is fairly simple, use a function f
 > load a variable in harvest's context using node.js convention ( function(err,result) ). Similar with load but using node.js standard calling convention
 
     harvest.let(variableName, functionApi, ... )
+
+
+### pack()
+
+>  similar with let but you can do multiple calls and the result will be stored in an array. Waiting calls will be executed when all calls are done
+
+    harvest.pack(arrayName, functionApi, ... )
+
 
 ### letAt()
 
