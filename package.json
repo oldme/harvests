@@ -1,7 +1,7 @@
 {
   "name": "harvests",
   "description": "From now is possible to call asynchronous functions in a declarative way and to get almost the same experience as with synchronous code.",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "homepage": "https://github.com/salboaie/SwarmHarvest",
   "author": {
     "name": "Alboaie Sinica",
@@ -28,7 +28,7 @@
 
     "node": ">=0.6.0"
   },
-  "main": "./lib/harvest.js",
+  "main": "./lib/asynchron.js",
   "licenses": [
     {
       "type": "LGPL",

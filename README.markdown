@@ -1,4 +1,10 @@
-Harvests library is an attempt to sort out the ugliness of the asynchronous callbacks without promises or control flow libraries.
+
+Probably is faster compared with complex promises implementations but the syntax is better with 'asynchron' library https://github.com/salboaie/asynchron !
+This module is abandoned. Experimental implementation of wait,asyn pattern
+
+Harvests library is an experiment to sort out the ugliness of the asynchronous callbacks without promises or control flow libraries.
+
+New!!! versions > 0.3: changed the error handling mechanism!   On error, assign that variable with null and should be manually tested. Only uncatched exceptions will make calls to onError. You should throw exceptions yourself
 
 An harvest handles the dependencies calls, you don't have to describe the flow. The main idea is to create an environment where you continue to use asynchronous functions as usual but with a syntax that resemble synchronous calls.
 
@@ -7,7 +13,7 @@ An harvest handles the dependencies calls, you don't have to describe the flow. 
         harvest.let("myFileContent", fs.readFile, "fileName.txt");  
         harvest.do(console.log, wait("myFileContent"));  
         
-        //on succes harvest.myFileContent will contain the content
+        //on success harvest.myFileContent will contain the content
         //you can start as many calls and they will be executed when their dependencies are fulfilled
 
 ## Example 2:
@@ -144,7 +150,7 @@ The syntax for calling asynchronous functions is fairly simple, use a function f
      harvest.xlet(variableName, conventionFunction, callback)
      harvest.xletAt(variableName, conventionFunction, callback)
 
-> conventionFunction functions are easy to write. Please,look in the harvest.js for how defaultHarvestCallConvention is implemented
+> conventionFunction functions are easy to write. Please,look in the asynchron.js for how defaultHarvestCallConvention is implemented
 
 
 ### load()  similar with let, different calling convention
@@ -173,18 +179,7 @@ A harvest is doing stuff in parallel when is possible but  you don't have to thi
 Harvests don't try to resolve all imaginable cases involving asynchronous code but it covers the usual cases found in real projects.
 I would love to see the cases when you need promises, flow control libraries, etc.
 
-
 ## ToDOs
-
-> Create more call conventions for other common libraries? What call conventions do you use?
-
-> It is possible to implement lazy loading. A lazy let function could be implemented fairly easy .
-
-> Maybe: detect circular dependencies!?  Somebody needs it? Just ask!
-
-> Maybe: handle the case with multiple result calls that change the same object. I think promises have the same problem and a wrapper is required.
-
-> Maybe: add chains,eg.  wait('variable.field').
 
 
 
