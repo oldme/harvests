@@ -1,4 +1,3 @@
-
 Probably is faster compared with complex promises implementations but the syntax is better with 'asynchron' library https://github.com/salboaie/asynchron !
 This module is abandoned. Experimental implementation of wait,asyn pattern
 
@@ -177,7 +176,7 @@ Harvest idea is based on the insight that you are doing calls to return values. 
 A harvest is doing stuff in parallel when is possible but  you don't have to think about such things (except if you are going to do many, many requests,etc).
 
 Harvests don't try to resolve all imaginable cases involving asynchronous code but it covers the usual cases found in real projects.
-I would love to see the cases when you need promises, flow control libraries, etc.
+
 
 ## ToDOs
 
